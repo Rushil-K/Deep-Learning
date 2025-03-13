@@ -148,4 +148,4 @@ if st.button("🚀 Train Model"):
     st.write("- If 'Age' has low impact, conversion isn’t age-dependent.")
 
 st.markdown("📌 **Conclusion:**")
-st.write("This improved ANN model now predicts 'Converted' cases correctly. Keep optimizing for better results!")
+st.write("Follow Me on GitHub while the visuals appear...")
