@@ -29,7 +29,7 @@ if not os.path.exists("trained_model.h5"):
 model = load_model("trained_model.h5")
 
 # 🔽 Google Drive File ID for the dataset ZIP
-DATASET_FILE_ID = "18_IlD33FyWSy1kSSEaCBfmAeyQCXqaV1"
+DATASET_FILE_ID = "1OPmMFUQmeZuaiYb0FQhwOMZfEbVrWKEK"
 
 if not os.path.exists("data.zip"):
     st.sidebar.write("📥 Downloading dataset...")
@@ -45,7 +45,7 @@ csv_path = "dataset/data.csv"
 df = pd.read_csv(csv_path)
 
 # 🎯 Feature Selection
-features = ['Age', 'Income', 'Purchases', 'Clicks', 'Spent']
+features = ['Age', 'Income', 'Purchases', 'Clicks', 'Spent', 'Gender']
 target = 'Converted'
 
 # 🔽 One-Hot Encoding for 'Gender'
