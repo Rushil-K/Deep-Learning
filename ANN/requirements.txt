@@ -7,3 +7,4 @@ seaborn
 matplotlib
 shap
 gdown
+zipfile36
