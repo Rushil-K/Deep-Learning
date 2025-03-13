@@ -48,7 +48,7 @@ st.write("📂 **Dataset Preview:**")
 st.dataframe(full_df.head())
 
 # 🎯 Feature & Target Selection
-features = ["Age", "Gender", "Income", "Purchases", "Clicks", "Spent"]
+features = ["Age", "nmrk2627_encoded_Gender", "Income", "Purchases", "Clicks", "Spent"]
 target = "Converted"
 
 # Randomly select 50,000 records for training
