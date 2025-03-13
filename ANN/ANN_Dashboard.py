@@ -50,7 +50,7 @@ except Exception as e:
     st.stop()
 
 # 🎯 Feature Selection
-features = ['Age', 'Income', 'Purchases', 'Clicks', 'Spent', 'Gender']
+features = ['Age', 'Income', 'Purchases', 'Clicks', 'Spent', 'nmrk2627_encoded_Gender']
 target = 'Converted'
 
 # 🔽 One-Hot Encoding for 'Gender'
