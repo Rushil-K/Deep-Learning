@@ -5,36 +5,29 @@ import tensorflow as tf
 import seaborn as sns
 import matplotlib.pyplot as plt
 import gdown
+import random
+
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
-import random
-import os
+from eli5.sklearn import PermutationImportance
+from sklearn.linear_model import LogisticRegression
 
-# 📌 Google Drive File ID
-file_id = "18_IlD33FyWSy1kSSEaCBfmAeyQCXqaV1"  # Replace with your actual file ID
-dataset_path = "dataset.csv"
+# 🎯 Download dataset from Google Drive
+st.sidebar.header("📂 Loading Dataset...")
+file_id = "18_IlD33FyWSy1kSSEaCBfmAeyQCXqaV1"
+output = "data.csv"
+gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
 
-# Check if dataset is already downloaded
-if not os.path.exists(dataset_path):
-    with st.spinner("Downloading dataset from Google Drive... ⏳"):
-        gdown.download(f"https://drive.google.com/uc?id={file_id}", dataset_path, quiet=False)
-    st.success("Dataset downloaded successfully! 🎉")
+# Handle UnicodeDecodeError
+try:
+    full_df = pd.read_csv(output, encoding="utf-8")
+except UnicodeDecodeError:
+    full_df = pd.read_csv(output, encoding="latin1")
 
-# Load dataset
-@st.cache_data
-def load_data():
-    return pd.read_csv(dataset_path)
-
-full_df = load_data()
-
-# Streamlit UI
-st.title("📊 ANN Model Dashboard - Conversion Prediction")
-st.sidebar.header("🔧 Model Hyperparameters")
-
-# Randomly select 50,000 records for training
+# Select 50,000 random records for retraining
 def get_sample_data(df, sample_size=50000):
     return df.sample(sample_size, random_state=random.randint(0, 9999))
 
@@ -52,16 +45,16 @@ X = pd.get_dummies(X, columns=['Gender'], drop_first=True)
 
 # Standardizing numerical features
 scaler = StandardScaler()
-num_cols = ['Age', 'Income', 'Purchases', 'Clicks', 'Spent']
-X[num_cols] = scaler.fit_transform(X[num_cols])
+X[X.columns] = scaler.fit_transform(X)
 
 # Splitting the dataset
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
-# Load the trained model
+# Load the trained ANN model
 model = load_model("trained_model.h5")
 
 # Sidebar - Hyperparameters
+st.sidebar.header("🔧 Model Hyperparameters")
 epochs = st.sidebar.slider("Epochs", min_value=10, max_value=100, step=10, value=50)
 learning_rate = st.sidebar.selectbox("Learning Rate", [0.01, 0.001, 0.0001], index=1)
 activation_function = st.sidebar.selectbox("Activation Function", ["relu", "sigmoid", "tanh", "softmax"])
@@ -74,14 +67,12 @@ dropout_rate = st.sidebar.slider("Dropout Rate", 0.1, 0.5, step=0.1, value=0.3)
 optimizers = {"adam": Adam(learning_rate), "sgd": SGD(learning_rate), "rmsprop": RMSprop(learning_rate)}
 optimizer = optimizers[optimizer_choice]
 
-# Fine-tune the model instead of full retraining
-with st.spinner("Fine-tuning the model... ⏳"):
-    for layer in model.layers[:-1]:  # Freeze all layers except the last one
-        layer.trainable = False
+# Retrain model with new hyperparameters
+with st.spinner("Training model... ⏳"):
     model.compile(optimizer=optimizer, loss="binary_crossentropy", metrics=["accuracy"])
     history = model.fit(X_train, y_train, epochs=epochs, batch_size=128, validation_split=0.2, verbose=0)
 
-st.success("🎉 Model fine-tuning complete!")
+st.success("🎉 Model training complete!")
 
 # Model Evaluation
 loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
@@ -131,14 +122,11 @@ st.dataframe(report_df)
 
 # Feature Importance using Permutation Importance
 st.subheader("🔍 Feature Importance")
-import eli5
-from eli5.sklearn import PermutationImportance
-from sklearn.linear_model import LogisticRegression
 
 # Using Logistic Regression as an alternative feature importance estimator
 perm_model = LogisticRegression(max_iter=500)
 perm_model.fit(X_train, y_train)
-perm = PermutationImportance(perm_model, random_state=552627).fit(X_test, y_test)
+perm = PermutationImportance(perm_model, random_state=42).fit(X_test, y_test)
 
 feature_importance = pd.DataFrame({"Feature": X.columns, "Importance": perm.feature_importances_})
 feature_importance = feature_importance.sort_values(by="Importance", ascending=False)
