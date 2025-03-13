@@ -60,7 +60,7 @@ if not os.path.exists(csv_path):
 df = pd.read_csv(csv_path)
 
 # 🎯 Feature Selection
-features = ['Age', 'Income', 'Purchases', 'Clicks', 'Spent', 'Gender']
+features = ['Age', 'Income', 'Purchases', 'Clicks', 'Spent', 'nmrk2627_encoded_Gender']
 target = 'Converted'
 
 # 🏷️ Random Sampling (50,000 Records)
