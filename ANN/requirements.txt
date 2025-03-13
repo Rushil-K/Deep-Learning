@@ -2,8 +2,8 @@ streamlit
 numpy
 pandas
 tensorflow
+scikit-learn
 seaborn
 matplotlib
+shap
 gdown
-scikit-learn
-eli5
