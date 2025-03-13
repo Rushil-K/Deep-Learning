@@ -53,10 +53,6 @@ except Exception as e:
 features = ['Age', 'Gender', 'Income',	'Purchases',	'Clicks',	'Spent', 'Converted']
 target = 'Converted'
 
-# 🔽 One-Hot Encoding for 'Gender'
-if 'Gender' in df.columns:
-    df = pd.get_dummies(df, columns=['Gender'], drop_first=True)
-    features.append("Gender_Male")  # Add encoded gender column if present
 
 # 🏷️ Random Sampling (50,000 Records)
 random_state = random.randint(0, 552627)
