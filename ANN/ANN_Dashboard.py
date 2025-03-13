@@ -4,20 +4,31 @@ import pandas as pd
 import tensorflow as tf
 import seaborn as sns
 import matplotlib.pyplot as plt
+import gdown
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 import random
+import os
 
-# Load 1 million dataset (Ensure this CSV is present in the same directory)
+# 📌 Google Drive File ID
+file_id = "18_IlD33FyWSy1kSSEaCBfmAeyQCXqaV1"  # Replace with your actual file ID
+dataset_path = "dataset.csv"
+
+# Check if dataset is already downloaded
+if not os.path.exists(dataset_path):
+    with st.spinner("Downloading dataset from Google Drive... ⏳"):
+        gdown.download(f"https://drive.google.com/uc?id={file_id}", dataset_path, quiet=False)
+    st.success("Dataset downloaded successfully! 🎉")
+
+# Load dataset
 @st.cache_data
-def load_full_dataset():
-    df = pd.read_csv("dataset.csv")  # Change to your dataset filename
-    return df
+def load_data():
+    return pd.read_csv(dataset_path)
 
-full_df = load_full_dataset()
+full_df = load_data()
 
 # Streamlit UI
 st.title("📊 ANN Model Dashboard - Conversion Prediction")
@@ -41,7 +52,8 @@ X = pd.get_dummies(X, columns=['Gender'], drop_first=True)
 
 # Standardizing numerical features
 scaler = StandardScaler()
-X[X.columns] = scaler.fit_transform(X)
+num_cols = ['Age', 'Income', 'Purchases', 'Clicks', 'Spent']
+X[num_cols] = scaler.fit_transform(X[num_cols])
 
 # Splitting the dataset
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
@@ -62,12 +74,14 @@ dropout_rate = st.sidebar.slider("Dropout Rate", 0.1, 0.5, step=0.1, value=0.3)
 optimizers = {"adam": Adam(learning_rate), "sgd": SGD(learning_rate), "rmsprop": RMSprop(learning_rate)}
 optimizer = optimizers[optimizer_choice]
 
-# Retrain model with new hyperparameters
-with st.spinner("Training model... ⏳"):
+# Fine-tune the model instead of full retraining
+with st.spinner("Fine-tuning the model... ⏳"):
+    for layer in model.layers[:-1]:  # Freeze all layers except the last one
+        layer.trainable = False
     model.compile(optimizer=optimizer, loss="binary_crossentropy", metrics=["accuracy"])
     history = model.fit(X_train, y_train, epochs=epochs, batch_size=128, validation_split=0.2, verbose=0)
 
-st.success("🎉 Model training complete!")
+st.success("🎉 Model fine-tuning complete!")
 
 # Model Evaluation
 loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
@@ -124,7 +138,7 @@ from sklearn.linear_model import LogisticRegression
 # Using Logistic Regression as an alternative feature importance estimator
 perm_model = LogisticRegression(max_iter=500)
 perm_model.fit(X_train, y_train)
-perm = PermutationImportance(perm_model, random_state=42).fit(X_test, y_test)
+perm = PermutationImportance(perm_model, random_state=552627).fit(X_test, y_test)
 
 feature_importance = pd.DataFrame({"Feature": X.columns, "Importance": perm.feature_importances_})
 feature_importance = feature_importance.sort_values(by="Importance", ascending=False)
@@ -141,5 +155,3 @@ st.write("- If 'Age' has low importance, conversion isn’t strongly related to 
 
 st.markdown("📌 **Conclusion:**")
 st.write("This ANN model helps predict conversions with key insights into user behavior. Keep optimizing hyperparameters for better results!")
-
-
