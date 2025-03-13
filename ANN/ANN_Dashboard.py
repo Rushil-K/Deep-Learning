@@ -8,51 +8,44 @@ import requests
 import os
 import gdown
 import random
+from io import BytesIO
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, SGD, RMSprop
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 import shap
 
-# 🔽 Google Drive File IDs
-MODEL_FILE_ID = "1NNxt6hnkAxUO8aI2sNCzPut0Nbmp8H_T"
-DATASET_FILE_ID = "1OPmMFUQmeZuaiYb0FQhwOMZfEbVrWKEK"
+# 🔽 Google Drive File ID for the trained model
+GDRIVE_MODEL_ID = "1NNxt6hnkAxUO8aI2sNCzPut0Nbmp8H_T"
 
-# 📂 Filenames
-MODEL_FILE = "trained_model.h5"
-DATASET_FILE = "dataset.csv"
-
-# 🔽 Download Trained Model if Not Present
-if not os.path.exists(MODEL_FILE):
+# 🔽 Download the trained model if not present
+if not os.path.exists("trained_model.h5"):
     st.sidebar.write("📥 Downloading trained model from Google Drive...")
-    gdown.download(f"https://drive.google.com/uc?id={MODEL_FILE_ID}", MODEL_FILE, quiet=False)
+    gdown.download(f"https://drive.google.com/uc?id={GDRIVE_MODEL_ID}", "trained_model.h5", quiet=False)
 
-# ✅ Load Model
-try:
-    model = load_model(MODEL_FILE)
-    st.sidebar.success("✅ Model loaded successfully!")
-except Exception as e:
-    st.sidebar.error("❌ Failed to load the model! Check file integrity.")
-    st.stop()
+# Load Model
+model = load_model("trained_model.h5")
 
-# 🔽 Download Dataset if Not Present
-if not os.path.exists(DATASET_FILE):
+# 🔽 Google Drive File ID for the dataset CSV
+GDRIVE_DATASET_ID = "1OPmMFUQmeZuaiYb0FQhwOMZfEbVrWKEK"
+
+# 🔽 Download the dataset if not present
+csv_path = "dataset.csv"
+if not os.path.exists(csv_path):
     st.sidebar.write("📥 Downloading dataset...")
-    gdown.download(f"https://drive.google.com/uc?id={DATASET_FILE_ID}", DATASET_FILE, quiet=False)
+    gdown.download(f"https://drive.google.com/uc?id={GDRIVE_DATASET_ID}", csv_path, quiet=False)
 
-# ✅ Load CSV Data
-try:
-    df = pd.read_csv(DATASET_FILE)
-    st.sidebar.success("✅ Dataset loaded successfully!")
-except Exception as e:
-    st.sidebar.error("❌ Failed to load dataset! Check file integrity.")
-    st.stop()
+# 🔽 Load CSV Data
+df = pd.read_csv(csv_path)
 
 # 🎯 Feature Selection
-features = ['Age', 'Gender', 'Income',	'Purchases',	'Clicks',	'Spent', 'Converted']
+features = ['Age', 'Gender', 'Income', 'Purchases', 'Clicks', 'Spent']
 target = 'Converted'
 
+# 🔽 Apply Ordinal Encoding to 'Gender'
+encoder = OrdinalEncoder()
+df[['Gender']] = encoder.fit_transform(df[['Gender']])
 
 # 🏷️ Random Sampling (50,000 Records)
 random_state = random.randint(0, 552627)
