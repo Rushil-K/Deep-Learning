@@ -1,11 +1,9 @@
 streamlit
-tensorflow
 numpy
 pandas
+tensorflow
 seaborn
 matplotlib
-requests
 gdown
 scikit-learn
 shap
-h5py
