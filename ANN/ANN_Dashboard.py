@@ -4,30 +4,32 @@ import pandas as pd
 import tensorflow as tf
 import seaborn as sns
 import matplotlib.pyplot as plt
+import shap
 import gdown
-import random
-
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
-from eli5.sklearn import PermutationImportance
-from sklearn.linear_model import LogisticRegression
+import random
 
-# 🎯 Download dataset from Google Drive
-st.sidebar.header("📂 Loading Dataset...")
+# Google Drive File ID (Dataset stored in Google Drive)
 file_id = "18_IlD33FyWSy1kSSEaCBfmAeyQCXqaV1"
-output = "data.csv"
+output = "dataset.csv"
+
+# Download dataset from Google Drive
+st.info("📥 Downloading dataset...")
 gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
 
-# Handle UnicodeDecodeError
-try:
-    full_df = pd.read_csv(output, encoding="utf-8")
-except UnicodeDecodeError:
-    full_df = pd.read_csv(output, encoding="latin1")
+# Load dataset
+st.success("✅ Dataset downloaded successfully!")
+full_df = pd.read_csv(output, encoding="ISO-8859-1")
 
-# Select 50,000 random records for retraining
+# Streamlit UI
+st.title("📊 ANN Model Dashboard - Conversion Prediction")
+st.sidebar.header("🔧 Model Hyperparameters")
+
+# Randomly select 50,000 records for training
 def get_sample_data(df, sample_size=50000):
     return df.sample(sample_size, random_state=random.randint(0, 9999))
 
@@ -50,11 +52,12 @@ X[X.columns] = scaler.fit_transform(X)
 # Splitting the dataset
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
-# Load the trained ANN model
+# Load the trained model
+st.info("📥 Loading trained ANN model...")
 model = load_model("trained_model.h5")
+st.success("✅ Model loaded successfully!")
 
 # Sidebar - Hyperparameters
-st.sidebar.header("🔧 Model Hyperparameters")
 epochs = st.sidebar.slider("Epochs", min_value=10, max_value=100, step=10, value=50)
 learning_rate = st.sidebar.selectbox("Learning Rate", [0.01, 0.001, 0.0001], index=1)
 activation_function = st.sidebar.selectbox("Activation Function", ["relu", "sigmoid", "tanh", "softmax"])
@@ -68,7 +71,7 @@ optimizers = {"adam": Adam(learning_rate), "sgd": SGD(learning_rate), "rmsprop":
 optimizer = optimizers[optimizer_choice]
 
 # Retrain model with new hyperparameters
-with st.spinner("Training model... ⏳"):
+with st.spinner("🚀 Training model... Please wait!"):
     model.compile(optimizer=optimizer, loss="binary_crossentropy", metrics=["accuracy"])
     history = model.fit(X_train, y_train, epochs=epochs, batch_size=128, validation_split=0.2, verbose=0)
 
@@ -86,16 +89,16 @@ st.subheader("📈 Training Performance")
 fig, ax = plt.subplots(1, 2, figsize=(14, 5))
 
 # Accuracy Plot
-ax[0].plot(history.history['accuracy'], label="Train Accuracy")
-ax[0].plot(history.history['val_accuracy'], label="Validation Accuracy")
+ax[0].plot(history.history['accuracy'], label="Train Accuracy", color="blue")
+ax[0].plot(history.history['val_accuracy'], label="Validation Accuracy", color="red")
 ax[0].set_title("Accuracy over Epochs")
 ax[0].set_xlabel("Epochs")
 ax[0].set_ylabel("Accuracy")
 ax[0].legend()
 
 # Loss Plot
-ax[1].plot(history.history['loss'], label="Train Loss")
-ax[1].plot(history.history['val_loss'], label="Validation Loss")
+ax[1].plot(history.history['loss'], label="Train Loss", color="blue")
+ax[1].plot(history.history['val_loss'], label="Validation Loss", color="red")
 ax[1].set_title("Loss over Epochs")
 ax[1].set_xlabel("Epochs")
 ax[1].set_ylabel("Loss")
@@ -120,20 +123,13 @@ report = classification_report(y_test, y_pred, output_dict=True)
 report_df = pd.DataFrame(report).transpose()
 st.dataframe(report_df)
 
-# Feature Importance using Permutation Importance
-st.subheader("🔍 Feature Importance")
-
-# Using Logistic Regression as an alternative feature importance estimator
-perm_model = LogisticRegression(max_iter=500)
-perm_model.fit(X_train, y_train)
-perm = PermutationImportance(perm_model, random_state=42).fit(X_test, y_test)
-
-feature_importance = pd.DataFrame({"Feature": X.columns, "Importance": perm.feature_importances_})
-feature_importance = feature_importance.sort_values(by="Importance", ascending=False)
+# Feature Importance using SHAP
+st.subheader("🔍 Feature Importance using SHAP")
+explainer = shap.Explainer(model, X_train)
+shap_values = explainer(X_test)
 
 fig, ax = plt.subplots(figsize=(8, 5))
-sns.barplot(x="Importance", y="Feature", data=feature_importance, palette="coolwarm")
-ax.set_title("Feature Importance")
+shap.summary_plot(shap_values, X_test, show=False)
 st.pyplot(fig)
 
 st.markdown("✅ **Key Insights from Feature Importance:**")
