@@ -2,9 +2,9 @@ streamlit
 numpy
 pandas
 tensorflow
-scikit-learn
 seaborn
 matplotlib
-shap
 requests
-zipfile36
+gdown
+shap
+scikit-learn
