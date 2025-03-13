@@ -38,7 +38,7 @@ df[['Gender']] = encoder.fit_transform(df[['Gender']])
 X = df[features]
 y = df[target]
 
-smote = SMOTE(random_state=42)
+smote = SMOTE(random_state=552627)
 X_resampled, y_resampled = smote.fit_resample(X, y)
 
 # Standardize Data
@@ -46,7 +46,7 @@ scaler = StandardScaler()
 X_resampled[X.columns] = scaler.fit_transform(X_resampled)
 
 # Train-Test Split
-X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, stratify=y_resampled, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, stratify=y_resampled, random_state=552627)
 
 # Compute Class Weights
 class_weights = compute_class_weight("balanced", classes=np.unique(y_train), y=y_train)
