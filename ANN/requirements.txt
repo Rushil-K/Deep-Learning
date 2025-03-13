@@ -4,7 +4,7 @@ pandas
 tensorflow
 seaborn
 matplotlib
-requests
 gdown
-scikit-learn
 shap
+scikit-learn
+imbalanced-learn
