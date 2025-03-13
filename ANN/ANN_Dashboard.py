@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import requests
 import zipfile
 import os
+import random
+import gdown  # Added missing import
 from io import BytesIO
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, SGD, RMSprop
@@ -15,48 +17,61 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 import shap
 
-# 🔽 GitHub Raw File URL (Replace with your actual GitHub URL)
-GITHUB_MODEL_URL = "https://raw.githubusercontent.com/Rushil-K/Deep-Learning/main/trained_model.h5"  # Replace
+# 📌 Random State for Sampling
+random_state = np.random.randint(0, 552627)
 
-# 🔽 Check if Model Exists, If Not, Download
+# 🔽 GitHub Raw URL for the trained model
+GITHUB_MODEL_URL = "https://raw.githubusercontent.com/Rushil-K/Deep-Learning/main/trained_model.h5"
+
+# 🔽 Download Trained Model if Not Exists
 if not os.path.exists("trained_model.h5"):
     st.sidebar.write("📥 Downloading trained model from GitHub...")
-    response = requests.get(GITHUB_MODEL_URL)
-    with open("trained_model.h5", "wb") as f:
-        f.write(response.content)
+    response = requests.get(GITHUB_MODEL_URL, stream=True)
+    if response.status_code == 200:
+        with open("trained_model.h5", "wb") as f:
+            for chunk in response.iter_content(chunk_size=1024):
+                f.write(chunk)
+        st.sidebar.success("✅ Model Downloaded Successfully!")
+    else:
+        st.sidebar.error("❌ Failed to download model. Check URL and permissions.")
 
-# Load Model
+# 🔽 Load Model
 model = load_model("trained_model.h5")
 
-# 🔽 Dataset Handling (Assuming it’s still from a ZIP file)
-dataset_file_id = "18_IlD33FyWSy1kSSEaCBfmAeyQCXqaV1"  
+# 🔽 Dataset Handling
+dataset_file_id = "18_IlD33FyWSy1kSSEaCBfmAeyQCXqaV1"
 
 if not os.path.exists("data.zip"):
     st.sidebar.write("📥 Downloading dataset...")
     gdown.download(f"https://drive.google.com/uc?id={dataset_file_id}", "data.zip", quiet=False)
 
+# 🔽 Extract Dataset if Not Exists
 if not os.path.exists("dataset"):
     st.sidebar.write("📂 Extracting dataset...")
     with zipfile.ZipFile("data.zip", "r") as zip_ref:
         zip_ref.extractall("dataset")
 
 # 🔽 Load CSV Data
-csv_path = "dataset/data.csv"  # Adjust if needed
+csv_path = "dataset/data.csv"  # Adjust path if needed
+if not os.path.exists(csv_path):
+    st.error("❌ Dataset file not found after extraction. Please check the ZIP contents.")
+    st.stop()
+
 df = pd.read_csv(csv_path)
 
 # 🎯 Feature Selection
-features = ['Age', 'nmrk2627_encoded_Gender', 'Income', 'Purchases', 'Clicks', 'Spent']
+features = ['Age', 'Income', 'Purchases', 'Clicks', 'Spent', 'Gender']
 target = 'Converted'
 
 # 🏷️ Random Sampling (50,000 Records)
-df_sample = df.sample(50000, random_state=random.randint(0,552627))
-
-X = df_sample[features]
-y = df_sample[target]
+df_sample = df.sample(50000, random_state=random_state)
 
 # 🔽 One-Hot Encoding for 'Gender'
-if 'Gender' in X.columns:
-    X = pd.get_dummies(X, columns=['Gender'], drop_first=True)
+df_sample = pd.get_dummies(df_sample, columns=['Gender'], drop_first=True)
+
+# 🔽 Prepare Data
+X = df_sample[features]
+y = df_sample[target]
 
 # 🔽 Standardization
 scaler = StandardScaler()
@@ -135,17 +150,9 @@ st.dataframe(report_df)
 
 # 🔍 Feature Importance using SHAP
 st.subheader("🔍 Feature Importance")
-explainer = shap.Explainer(model, X_test)
+explainer = shap.Explainer(model.predict, X_test)
 shap_values = explainer(X_test)
 
 fig, ax = plt.subplots(figsize=(8, 5))
 shap.summary_plot(shap_values, X_test, show=False)
 st.pyplot(fig)
-
-st.markdown("✅ **Key Insights from Feature Importance:**")
-st.write("- If 'Spent' and 'Clicks' have the highest importance, user engagement is key for conversion.")
-st.write("- If 'Gender' is high, the model might have bias.")
-st.write("- If 'Age' has low importance, conversion isn’t strongly related to age.")
-
-st.markdown("📌 **Conclusion:**")
-st.write("This ANN model helps predict conversions with key insights into user behavior. Keep optimizing hyperparameters for better results!")
