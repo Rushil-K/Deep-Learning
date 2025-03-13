@@ -54,7 +54,7 @@ Developed by:
 
 ## 🛡️ License  
 
-This project is licensed under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for details.  
+This project is licensed under the **Apache 2.0 License**. See the [LICENSE](https://github.com/Rushil-K/Deep-Learning/blob/main/LICENSE) file for details.  
 
 ---
 
