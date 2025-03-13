@@ -1,8 +1,9 @@
 streamlit
-tensorflow
-scikit-learn
-matplotlib
-seaborn
-pandas
 numpy
+pandas
+tensorflow
+seaborn
+matplotlib
+gdown
+scikit-learn
 eli5
