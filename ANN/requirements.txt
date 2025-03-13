@@ -5,6 +5,7 @@ tensorflow
 seaborn
 matplotlib
 requests
+zipfile36
 gdown
-shap
 scikit-learn
+shap
