@@ -6,6 +6,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import shap
 import gdown
+import zipfile
+import os
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 from sklearn.preprocessing import StandardScaler
@@ -13,21 +15,41 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 import random
 
-# Google Drive File ID (Dataset stored in Google Drive)
+# 🎯 Google Drive File ID (ZIP File Containing Dataset)
 file_id = "18_IlD33FyWSy1kSSEaCBfmAeyQCXqaV1"
-output = "dataset.csv"
+zip_output = "dataset.zip"
 
-# Download dataset from Google Drive
-st.info("📥 Downloading dataset...")
-gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
+# 📥 Download ZIP dataset from Google Drive
+st.info("📥 Downloading dataset ZIP file...")
+gdown.download(f"https://drive.google.com/uc?id={file_id}", zip_output, quiet=False)
 
-# Load dataset
-st.success("✅ Dataset downloaded successfully!")
-full_df = pd.read_csv(output, encoding="ISO-8859-1")
+# 🔓 Extract ZIP file
+st.info("🔓 Extracting dataset...")
+with zipfile.ZipFile(zip_output, "r") as zip_ref:
+    zip_ref.extractall("extracted_data")  # Extracts files into this folder
 
-# Streamlit UI
-st.title("📊 ANN Model Dashboard - Conversion Prediction")
-st.sidebar.header("🔧 Model Hyperparameters")
+# 🔍 Find the CSV file in extracted folder
+csv_file = None
+for file in os.listdir("extracted_data"):
+    if file.endswith(".csv"):
+        csv_file = os.path.join("extracted_data", file)
+        break
+
+# ✅ Load dataset
+if csv_file:
+    st.success(f"✅ Dataset extracted successfully! Loading {csv_file}...")
+    full_df = pd.read_csv(csv_file, encoding="ISO-8859-1")
+else:
+    st.error("❌ No CSV file found in ZIP! Please check the ZIP contents.")
+    st.stop()
+
+# 🧐 Show a sample of the dataset
+st.write("📂 **Dataset Preview:**")
+st.dataframe(full_df.head())
+
+# 🎯 Feature & Target Selection
+features = ["Age", "Gender", "Income", "Purchases", "Clicks", "Spent"]
+target = "Converted"
 
 # Randomly select 50,000 records for training
 def get_sample_data(df, sample_size=50000):
@@ -35,29 +57,26 @@ def get_sample_data(df, sample_size=50000):
 
 data = get_sample_data(full_df)
 
-# Preprocessing
-features = ['Age', 'Gender', 'Income', 'Purchases', 'Clicks', 'Spent']
-target = 'Converted'
-
 X = data[features]
 y = data[target]
 
-# One-hot encoding for categorical features
-X = pd.get_dummies(X, columns=['Gender'], drop_first=True)
+# 🏷️ One-hot encoding for 'Gender' column
+if "Gender" in X.columns:
+    X = pd.get_dummies(X, columns=["Gender"], drop_first=True)  # Converts 'Male/Female' → Binary
 
-# Standardizing numerical features
+# 🔬 Standardizing numerical features
 scaler = StandardScaler()
 X[X.columns] = scaler.fit_transform(X)
 
-# Splitting the dataset
+# 📊 Splitting the dataset
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
-# Load the trained model
+# 📥 Load the trained ANN model
 st.info("📥 Loading trained ANN model...")
 model = load_model("trained_model.h5")
 st.success("✅ Model loaded successfully!")
 
-# Sidebar - Hyperparameters
+# 🎛️ Sidebar - Hyperparameters
 epochs = st.sidebar.slider("Epochs", min_value=10, max_value=100, step=10, value=50)
 learning_rate = st.sidebar.selectbox("Learning Rate", [0.01, 0.001, 0.0001], index=1)
 activation_function = st.sidebar.selectbox("Activation Function", ["relu", "sigmoid", "tanh", "softmax"])
@@ -66,25 +85,24 @@ dense_layers = st.sidebar.selectbox("Dense Layers", [2, 3, 4, 5])
 neurons_per_layer = st.sidebar.selectbox("Neurons per Dense Layer", [32, 64, 128, 256, 512, 1024])
 dropout_rate = st.sidebar.slider("Dropout Rate", 0.1, 0.5, step=0.1, value=0.3)
 
-# Select optimizer
+# 🚀 Select optimizer
 optimizers = {"adam": Adam(learning_rate), "sgd": SGD(learning_rate), "rmsprop": RMSprop(learning_rate)}
 optimizer = optimizers[optimizer_choice]
 
-# Retrain model with new hyperparameters
+# 🔄 Retrain model with new hyperparameters
 with st.spinner("🚀 Training model... Please wait!"):
     model.compile(optimizer=optimizer, loss="binary_crossentropy", metrics=["accuracy"])
     history = model.fit(X_train, y_train, epochs=epochs, batch_size=128, validation_split=0.2, verbose=0)
 
 st.success("🎉 Model training complete!")
 
-# Model Evaluation
+# 📈 Model Evaluation
 loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
-
 st.subheader("📊 Model Performance")
 st.write(f"**Test Loss:** {loss:.4f}")
 st.write(f"**Test Accuracy:** {accuracy:.4f}")
 
-# Plot Accuracy & Loss
+# 📊 Accuracy & Loss Plot
 st.subheader("📈 Training Performance")
 fig, ax = plt.subplots(1, 2, figsize=(14, 5))
 
@@ -106,7 +124,7 @@ ax[1].legend()
 
 st.pyplot(fig)
 
-# Confusion Matrix
+# 🔍 Confusion Matrix
 st.subheader("📊 Confusion Matrix")
 y_pred = (model.predict(X_test) > 0.5).astype(int)
 cm = confusion_matrix(y_test, y_pred)
@@ -117,13 +135,13 @@ ax.set_xlabel("Predicted")
 ax.set_ylabel("Actual")
 st.pyplot(fig)
 
-# Classification Report
+# 🏆 Classification Report
 st.subheader("📜 Classification Report")
 report = classification_report(y_test, y_pred, output_dict=True)
 report_df = pd.DataFrame(report).transpose()
 st.dataframe(report_df)
 
-# Feature Importance using SHAP
+# 🔍 Feature Importance using SHAP
 st.subheader("🔍 Feature Importance using SHAP")
 explainer = shap.Explainer(model, X_train)
 shap_values = explainer(X_test)
