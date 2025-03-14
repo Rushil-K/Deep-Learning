@@ -6,9 +6,7 @@ import tensorflow as tf
 import seaborn as sns
 import matplotlib.pyplot as plt
 import gdown
-import random
 import shap
-from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder
 from sklearn.model_selection import train_test_split
@@ -57,7 +55,7 @@ st.title("📊 ANN Model Dashboard - Conversion Prediction")
 st.sidebar.header("🔧 Model Hyperparameters")
 
 # Hyperparameters
-epochs = st.sidebar.slider("Epochs", 10, 100, 50, 10)
+epochs = st.sidebar.slider("Epochs", 5, 100, 5, 5)  # Default set to 5
 learning_rate = st.sidebar.selectbox("Learning Rate", [0.01, 0.001, 0.0001], index=1)
 activation_function = st.sidebar.selectbox("Activation Function", ["relu", "sigmoid", "tanh", "softmax"])
 optimizer_choice = st.sidebar.selectbox("Optimizer", ["adam", "sgd", "rmsprop"])
@@ -142,10 +140,23 @@ if st.button("🚀 Train Model"):
     shap.summary_plot(shap_values, X_test[:100], show=False)
     st.pyplot(fig)
 
-    st.markdown("✅ **Key Insights from Feature Importance:**")
-    st.write("- If 'Spent' and 'Clicks' are dominant, engagement is key for conversion.")
-    st.write("- If 'Gender' is important, there may be model bias.")
-    st.write("- If 'Age' has low impact, conversion isn’t age-dependent.")
+    # Feature Importance Stats
+    st.subheader("📌 Feature Importance Stats")
+    mean_abs_shap_values = np.abs(shap_values.values).mean(axis=0)
+    importance_df = pd.DataFrame({'Feature': X.columns, 'Importance': mean_abs_shap_values})
+    importance_df = importance_df.sort_values(by="Importance", ascending=False)
+    st.dataframe(importance_df)
 
-st.markdown("📌 **Conclusion:**")
-st.write("Follow Me on GitHub while the visuals appear...")
+# 🔗 Follow Me on GitHub Button
+st.markdown(
+    """
+    <div style="text-align: center;">
+        <a href="https://github.com/Rushil-K" target="_blank">
+            <button style="background-color: #24292e; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
+                ⭐ Follow Me on GitHub
+            </button>
+        </a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
