@@ -25,6 +25,9 @@ def download_and_load_model():
 
     return tf.keras.models.load_model(MODEL_PATH)
 
+# ✅ Load the model at the start
+model = download_and_load_model()
+
 # Function to preprocess the uploaded image
 def preprocess_image(image):
     """Processes the image by detecting and correcting the background color."""
@@ -67,7 +70,7 @@ if uploaded_file:
 
     processed_image = preprocess_image(image)
 
-    # Model prediction
+    # ✅ Model prediction (now fixed)
     prediction = model.predict(processed_image)
     predicted_class = np.argmax(prediction)
 
