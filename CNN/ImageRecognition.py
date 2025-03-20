@@ -4,6 +4,7 @@ import tensorflow as tf
 import gdown  # To download from Google Drive
 from PIL import Image
 import os
+import base64
 
 # Google Drive File ID for the model
 FILE_ID = "1uAoz8Rp7vnlZcdOUJakAvS7cOQTcQWA-"
@@ -34,86 +35,65 @@ def preprocess_image(image):
     image = image.reshape(1, 28, 28, 1)  # Reshape for model input
     return image
 
-# Custom CSS for Styling
-st.markdown(
+# Function to create a GitHub follow button
+def github_button():
+    github_url = "https://github.com/Rushil-K"
+    button_html = f"""
+    <div style="text-align: center;">
+        <a href="{github_url}" target="_blank" style="
+            display: inline-block;
+            background-color: #24292e;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;">
+            ⭐ Follow Me on GitHub
+        </a>
+    </div>
     """
-    <style>
-    body {
-        background-color: #f4f4f4;
-        font-family: 'Arial', sans-serif;
-    }
-    .main-title {
-        text-align: center;
-        font-size: 36px;
-        font-weight: bold;
-        color: #4A90E2;
-    }
-    .upload-box {
-        border: 2px dashed #4A90E2;
-        padding: 20px;
-        border-radius: 10px;
-        background-color: #ffffff;
-        text-align: center;
-    }
-    .prediction-box {
-        text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-        color: #2D3748;
-        margin-top: 20px;
-    }
-    .bar-chart {
-        margin-top: 10px;
-    }
-    .github-btn {
-        display: flex;
-        justify-content: center;
-        margin-top: 30px;
-    }
-    .github-btn a {
-        text-decoration: none;
-        background-color: #24292E;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 5px;
-        font-weight: bold;
-    }
-    .github-btn a:hover {
-        background-color: #0366d6;
-    }
-    </style>
-    """,
+    st.markdown(button_html, unsafe_allow_html=True)
+
+# Streamlit UI
+st.markdown(
+    "<h1 style='text-align: center; color: #FF4B4B;'>🖊 Handwritten Digit Recognition</h1>",
     unsafe_allow_html=True
 )
 
-# Streamlit UI
-st.markdown('<h1 class="main-title">🖊 Handwritten Digit Recognition</h1>', unsafe_allow_html=True)
-st.write("### Upload a handwritten digit image, and the model will predict the number.")
+st.write("### Upload an image or capture from your camera 📷 to predict the digit.")
 
-st.markdown('<div class="upload-box">', unsafe_allow_html=True)
-uploaded_file = st.file_uploader("Upload an image (JPG, PNG, JPEG)", type=["jpg", "png", "jpeg"])
-st.markdown('</div>', unsafe_allow_html=True)
+# File uploader or camera input
+col1, col2 = st.columns(2)
 
+with col1:
+    uploaded_file = st.file_uploader("Upload an image (JPG, PNG, JPEG)", type=["jpg", "png", "jpeg"])
+
+with col2:
+    captured_file = st.camera_input("Capture an image using your camera")
+
+# Process the selected image
+image = None
 if uploaded_file:
     image = Image.open(uploaded_file)
-    st.image(image, caption="🖼 Uploaded Image", use_column_width=True)
+    st.image(image, caption="📂 Uploaded Image", use_column_width=True)
 
+elif captured_file:
+    image = Image.open(captured_file)
+    st.image(image, caption="📸 Captured Image", use_column_width=True)
+
+# Perform prediction if an image is selected
+if image:
     processed_image = preprocess_image(image)
 
     # Model prediction
     prediction = model.predict(processed_image)
     predicted_class = np.argmax(prediction)
 
-    st.markdown(f'<div class="prediction-box">✨ Predicted Digit: {predicted_class}</div>', unsafe_allow_html=True)
+    st.success(f"### ✨ Predicted Digit: {predicted_class}")
+
     st.write("### 🔢 Prediction Probabilities:")
     st.bar_chart(prediction.flatten())  # Display probabilities as a bar chart
 
-# GitHub Follow Button
-st.markdown(
-    """
-    <div class="github-btn">
-        <a href="https://github.com/Rushil-K" target="_blank">🚀 Follow Me on GitHub</a>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+# Display GitHub button at the bottom
+st.markdown("---")
+github_button()
