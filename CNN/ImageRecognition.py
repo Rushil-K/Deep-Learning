@@ -46,7 +46,7 @@ if uploaded_file:
 # GitHub Follow Button
 st.markdown("""
     <div style="text-align: center; padding-top: 20px;">
-        <a href="https://github.com/YOUR_GITHUB_USERNAME" target="_blank">
+        <a href="https://github.com/Rushil-K" target="_blank">
             <button style="
                 background-color: black;
                 color: white;
