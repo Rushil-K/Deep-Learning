@@ -6,7 +6,7 @@ from PIL import Image
 import os
 
 # ✅ Set page configuration at the top
-st.set_page_config(page_title="Handwritten Digit Recognition", page_icon="✏️", layout="centered")
+st.set_page_config(page_title="Digit Recognition Zero 2 Nine", page_icon="✏️", layout="centered")
 
 # Google Drive File ID for the model
 FILE_ID = "1uAoz8Rp7vnlZcdOUJakAvS7cOQTcQWA-"
