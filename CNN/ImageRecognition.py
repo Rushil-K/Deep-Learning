@@ -5,7 +5,7 @@ import gdown  # To download from Google Drive
 from PIL import Image
 import os
 
-# ✅ Move this to the top
+# ✅ Set page configuration at the top
 st.set_page_config(page_title="Handwritten Digit Recognition", page_icon="✏️", layout="centered")
 
 # Google Drive File ID for the model
@@ -25,10 +25,7 @@ def download_and_load_model():
 
     return tf.keras.models.load_model(MODEL_PATH)
 
-# Load the model once using caching
-model = download_and_load_model()
-
-# Function to intelligently preprocess the image
+# Function to preprocess the uploaded image
 def preprocess_image(image):
     """Processes the image by detecting and correcting the background color."""
     image = image.convert("L")  # Convert to grayscale
@@ -50,30 +47,24 @@ def preprocess_image(image):
 
     return np_image
 
+# Streamlit UI
 st.title("🖊 Handwritten Digit Recognition")
-st.write("Upload or capture a digit image, and the model will predict the number.")
 
-# File uploader or camera input
-col1, col2 = st.columns(2)
+# ✅ Clear Instructions for Users
+st.write("""
+### 📌 Instructions:
+- **Please scan your handwritten digit** using a scanner or a scanning app.
+- **Ensure high visibility**: The digit should be clearly written, without noise or blur.
+- **Upload the scanned image** for the best prediction accuracy.
+""")
 
-with col1:
-    uploaded_file = st.file_uploader("📂 Upload an image (JPG, PNG, JPEG)", type=["jpg", "png", "jpeg"])
+# File uploader (NO CAMERA OPTION)
+uploaded_file = st.file_uploader("📂 Upload a **scanned handwritten digit image** (JPG, PNG, JPEG)", type=["jpg", "png", "jpeg"])
 
-with col2:
-    captured_file = st.camera_input("📸 Capture an image using your camera")
-
-# Process the selected image
-image = None
 if uploaded_file:
     image = Image.open(uploaded_file)
     st.image(image, caption="📂 Uploaded Image", use_column_width=True)
 
-elif captured_file:
-    image = Image.open(captured_file)
-    st.image(image, caption="📸 Captured Image", use_column_width=True)
-
-# Perform prediction if an image is selected
-if image:
     processed_image = preprocess_image(image)
 
     # Model prediction
