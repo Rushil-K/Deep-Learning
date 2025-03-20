@@ -6,7 +6,7 @@ from PIL import Image
 import os
 
 # ✅ Set page configuration at the top
-st.set_page_config(page_title="Digit Recognition Zero 2 Nine", page_icon="✏️", layout="centered")
+st.set_page_config(page_title="Image Recognition 0 to 9", page_icon="🔢", layout="centered")
 
 # Google Drive File ID for the model
 FILE_ID = "1uAoz8Rp7vnlZcdOUJakAvS7cOQTcQWA-"
@@ -51,33 +51,39 @@ def preprocess_image(image):
     return np_image
 
 # Streamlit UI
-st.title("🖊 Digit Recognition 0 to 9")
+st.title("🔢 Image Recognition 0 to 9")
 
 # ✅ Clear Instructions for Users
 st.write("""
 ### 📌 Instructions:
 - **Please scan your handwritten digit** using a scanner or a scanning app.
 - **Ensure high visibility**: The digit should be clearly written, without noise or blur.
-- **Upload the scanned image** for the best prediction accuracy.
+- **Upload one or more scanned images** for the best prediction accuracy.
 """)
 
-# File uploader (NO CAMERA OPTION)
-uploaded_file = st.file_uploader("📂 Upload a **scanned handwritten digit image** (JPG, PNG, JPEG)", type=["jpg", "png", "jpeg"])
+# File uploader (✅ MULTIPLE FILE SUPPORT)
+uploaded_files = st.file_uploader(
+    "📂 Upload **one or more** scanned handwritten digit images (JPG, PNG, JPEG)", 
+    type=["jpg", "png", "jpeg"], 
+    accept_multiple_files=True
+)
 
-if uploaded_file:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="📂 Uploaded Image", use_column_width=True)
+if uploaded_files:
+    for uploaded_file in uploaded_files:
+        image = Image.open(uploaded_file)
+        st.image(image, caption=f"📂 Uploaded Image: {uploaded_file.name}", use_column_width=True)
 
-    processed_image = preprocess_image(image)
+        processed_image = preprocess_image(image)
 
-    # ✅ Model prediction (now fixed)
-    prediction = model.predict(processed_image)
-    predicted_class = np.argmax(prediction)
+        # ✅ Model prediction
+        prediction = model.predict(processed_image)
+        predicted_class = np.argmax(prediction)
 
-    st.success(f"### ✨ Predicted Digit: {predicted_class}")
+        # Display results for each image
+        st.success(f"### ✨ Predicted Digit: {predicted_class}")
 
-    st.write("### 🔢 Prediction Probabilities:")
-    st.bar_chart(prediction.flatten())  # Display probabilities as a bar chart
+        st.write("### 🔢 Prediction Probabilities:")
+        st.bar_chart(prediction.flatten())  # Display probabilities as a bar chart
 
 # Footer with GitHub Follow Button
 st.markdown(
