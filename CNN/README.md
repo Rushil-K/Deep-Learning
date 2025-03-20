@@ -84,15 +84,10 @@ The deep learning model was trained on the MNIST dataset with the following resu
 - **Rushil Kohli**  
 - **Navneet Mittal**  
 
-Follow Rushil Kohli on GitHub: [GitHub Profile](https://github.com/Rushil-K)  
+Follow Rushil Kohli on GitHub: [Follow !](https://github.com/Rushil-K)  
 
----
 
-## License  
-This project is licensed under the **Apache 2.0 License**.  
-See the full license here: [LICENSE](LICENSE)  
 
----
 
 ## Future Improvements  
 - Support for handwritten text beyond digits  
