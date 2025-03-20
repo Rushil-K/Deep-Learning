@@ -51,7 +51,7 @@ def preprocess_image(image):
     return np_image
 
 # Streamlit UI
-st.title("🖊 Handwritten Digit Recognition")
+st.title("🖊 Digit Recognition 0 to 9")
 
 # ✅ Clear Instructions for Users
 st.write("""
