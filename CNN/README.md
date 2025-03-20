@@ -38,6 +38,7 @@ Follow these steps to set up the project locally:
 ```sh
 git clone https://github.com/Rushil-K/Image-Recognition-0-to-9.git
 cd Image-Recognition-0-to-9
+```
 
 ---
 
