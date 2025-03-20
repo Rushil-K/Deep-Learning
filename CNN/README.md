@@ -63,12 +63,6 @@ cd Image-Recognition-0-to-9
 
 ---
 
-## 📜 License  
-This project is licensed under the **Apache 2.0 License**.  
-📄 See the full license here: [LICENSE](LICENSE)  
-
----
-
 ## 🎯 Future Improvements  
 ✅ Support for handwritten text (not just digits)  
 ✅ Enhancement in noise reduction and preprocessing  
