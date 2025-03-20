@@ -5,6 +5,9 @@ import gdown  # To download from Google Drive
 from PIL import Image
 import os
 
+# ✅ Move this to the top
+st.set_page_config(page_title="Handwritten Digit Recognition", page_icon="✏️", layout="centered")
+
 # Google Drive File ID for the model
 FILE_ID = "1uAoz8Rp7vnlZcdOUJakAvS7cOQTcQWA-"
 MODEL_PATH = "models/mnist_cnn_t4_optimized.h5"
@@ -46,9 +49,6 @@ def preprocess_image(image):
     np_image = np_image.reshape(1, 28, 28, 1)
 
     return np_image
-
-# Streamlit UI
-st.set_page_config(page_title="Handwritten Digit Recognition", page_icon="✏️", layout="centered")
 
 st.title("🖊 Handwritten Digit Recognition")
 st.write("Upload or capture a digit image, and the model will predict the number.")
