@@ -38,6 +38,7 @@ y = df[target]
 
 smote = SMOTE(random_state=552627)
 X_resampled, y_resampled = smote.fit_resample(X, y)
+X_resampled = pd.DataFrame(X_resampled, columns=X.columns)  # Ensure DataFrame structure
 
 # Standardize Data
 scaler = StandardScaler()
@@ -55,12 +56,12 @@ st.title("📊 ANN Model Dashboard - Conversion Prediction")
 st.sidebar.header("🔧 Model Hyperparameters")
 
 # Hyperparameters
-epochs = st.sidebar.slider("Epochs", 5, 100, 5, 5)  # Default set to 5
+epochs = st.sidebar.slider("Epochs", 5, 12, 5, 1)  # Limited to 5-12 epochs
 learning_rate = st.sidebar.selectbox("Learning Rate", [0.01, 0.001, 0.0001], index=1)
-activation_function = st.sidebar.selectbox("Activation Function", ["relu", "sigmoid", "tanh", "softmax"])
+activation_function = st.sidebar.selectbox("Activation Function", ["relu", "sigmoid", "tanh"])
 optimizer_choice = st.sidebar.selectbox("Optimizer", ["adam", "sgd", "rmsprop"])
 dense_layers = st.sidebar.selectbox("Dense Layers", [2, 3, 4, 5])
-neurons_per_layer = st.sidebar.selectbox("Neurons per Layer", [32, 64, 128, 256, 512, 1024])
+neurons_per_layer = st.sidebar.selectbox("Neurons per Layer", [32, 64, 128, 256])
 dropout_rate = st.sidebar.slider("Dropout Rate", 0.1, 0.5, 0.1, 0.3)
 
 # Select Optimizer
@@ -116,7 +117,7 @@ if st.button("🚀 Train Model"):
 
     # 🔄 Confusion Matrix
     st.subheader("📊 Confusion Matrix")
-    y_pred = (model.predict(X_test) > 0.5).astype(int)
+    y_pred = (model.predict(X_test) > 0.4).astype(int)  # Adjusted threshold
     cm = confusion_matrix(y_test, y_pred)
 
     fig, ax = plt.subplots(figsize=(6, 4))
@@ -130,22 +131,6 @@ if st.button("🚀 Train Model"):
     report = classification_report(y_test, y_pred, output_dict=True)
     report_df = pd.DataFrame(report).transpose()
     st.dataframe(report_df)
-
-    # 🔍 Feature Importance using SHAP
-    st.subheader("🔍 Feature Importance")
-    explainer = shap.Explainer(model, X_train[:100])
-    shap_values = explainer(X_test[:100])
-
-    fig, ax = plt.subplots(figsize=(10, 6))
-    shap.summary_plot(shap_values, X_test[:100], show=False)
-    st.pyplot(fig)
-
-    # Feature Importance Stats
-    st.subheader("📌 Feature Importance Stats")
-    mean_abs_shap_values = np.abs(shap_values.values).mean(axis=0)
-    importance_df = pd.DataFrame({'Feature': X.columns, 'Importance': mean_abs_shap_values})
-    importance_df = importance_df.sort_values(by="Importance", ascending=False)
-    st.dataframe(importance_df)
 
 # 🔗 Follow Me on GitHub Button
 st.markdown(
