@@ -1,14 +1,14 @@
-# 🔬 Deep Learning - ANN Dashboard  
+#  Deep Learning - ANN Dashboard  
 
-### 🎯 Live Demo: [Visit Here](https://deep-learning-y9mzjiqycyib63ewyfwkgg.streamlit.app/)  
+###  Live Demo: [Visit Here](https://deep-learning-y9mzjiqycyib63ewyfwkgg.streamlit.app/)  
 
-## 📌 Overview  
+##  Overview  
 
 This **interactive ANN dashboard** is built using **Streamlit** to train and evaluate an **Artificial Neural Network (ANN)** on a dataset with customizable hyperparameters. It provides **insightful visualizations** and performance metrics for better model understanding.  
 
 ---
 
-## 🚀 Features  
+##  Features  
 
 ✔ **Train an ANN Model** with user-defined hyperparameters  
 ✔ **Live Accuracy & Loss Graphs**  
@@ -19,7 +19,7 @@ This **interactive ANN dashboard** is built using **Streamlit** to train and eva
 
 ---
 
-## 📂 Dataset  
+##  Dataset  
 
 - The dataset is dynamically loaded and processed.  
 - The **target variable** is **"Converted"** (binary classification).  
@@ -27,7 +27,7 @@ This **interactive ANN dashboard** is built using **Streamlit** to train and eva
 
 ---
 
-## 🎨 Dashboard UI  
+##  Dashboard UI  
 
 - 🔧 **Sidebar** for **Hyperparameter Selection**  
 - 🎛️ **Train Model Button** to start training after selection  
@@ -36,7 +36,7 @@ This **interactive ANN dashboard** is built using **Streamlit** to train and eva
 
 ---
 
-## 🏗️ How It Works  
+##  How It Works  
 
 1️⃣ **Select hyperparameters** (epochs, learning rate, activation function, etc.)  
 2️⃣ **Click "Train Model"** to start training  
@@ -44,7 +44,7 @@ This **interactive ANN dashboard** is built using **Streamlit** to train and eva
 
 ---
 
-## 👥 Contributors  
+##  Contributors  
 
 Developed by:  
 - **Rushil Kohli**  
