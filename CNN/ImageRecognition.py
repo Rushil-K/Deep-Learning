@@ -31,6 +31,7 @@ model = download_and_load_model()
 # Function to preprocess the uploaded image
 def preprocess_image(image):
     """Processes the image by detecting and correcting the background color."""
+    image = image.convert("L")  # Convert to grayscale
     image = image.resize((28, 28), Image.Resampling.LANCZOS)  # High-quality resize
     np_image = np.array(image)  # Convert to NumPy array
 
@@ -72,16 +73,6 @@ if uploaded_files:
         image = Image.open(uploaded_file)
         st.image(image, caption=f"📂 Uploaded Image: {uploaded_file.name}", use_column_width=True)
 
-        # ✅ Check if image is colored
-        if image.mode != "L":
-            image = image.convert("L")  # Convert to grayscale
-            np_image = np.array(image)
-            
-            # Invert the colors to ensure white digits on black background
-            np_image = 255 - np_image
-            image = Image.fromarray(np_image)
-            st.image(image, caption="🎨 Converted to White on Black", use_column_width=True)
-        
         processed_image = preprocess_image(image)
 
         # ✅ Model prediction
