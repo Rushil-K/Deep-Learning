@@ -132,6 +132,17 @@ if st.button("🚀 Train Model"):
     report_df = pd.DataFrame(report).transpose()
     st.dataframe(report_df)
 
+
+   # 🔍 Feature Importance using SHAP
+     st.subheader("🔍 Feature Importance")
+     explainer = shap.Explainer(model, X_train[:100])
+     shap_values = explainer(X_test[:100])
+ 
+     fig, ax = plt.subplots(figsize=(10, 6))
+     shap.summary_plot(shap_values, X_test[:100], show=False)
+     st.pyplot(fig)
+ 
+ 
 # 🔗 Follow Me on GitHub Button
 st.markdown(
     """
