@@ -73,6 +73,11 @@ if uploaded_files:
         image = Image.open(uploaded_file)
         st.image(image, caption=f"📂 Uploaded Image: {uploaded_file.name}", use_column_width=True)
 
+        # ✅ Convert to grayscale if the image is colored
+        if image.mode != "L":
+            image = image.convert("L")  # Convert to black and white
+            st.image(image, caption="🎨 Converted to Black & White", use_column_width=True)
+        
         processed_image = preprocess_image(image)
 
         # ✅ Model prediction
