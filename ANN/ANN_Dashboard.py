@@ -65,21 +65,21 @@ def build_model(input_shape, optimizer, activation, dense_layers, neurons, dropo
         optimizer (tf.keras.optimizers.Optimizer): The optimizer to use.
         activation (str): Activation function for the dense layers.
         dense_layers (int): Number of dense layers.
+        neurons (int): Number of neurons per dense layer.
         dropout_rate (float): Dropout rate.
 
     Returns:
         tf.keras.Model: A compiled Keras model.
     """
     model = tf.keras.Sequential()
-    model.add(tf.keras.layers.InputLayer(input_shape=input_shape))
-
+    model.add(tf.keras.layers.InputLayer(shape=input_shape))  # Corrected input_shape
     for _ in range(dense_layers):
         model.add(tf.keras.layers.Dense(neurons, activation=activation))
         model.add(tf.keras.layers.Dropout(dropout_rate))
-
     model.add(tf.keras.layers.Dense(1, activation="sigmoid"))
     model.compile(optimizer=optimizer, loss="binary_crossentropy", metrics=["accuracy"])
     return model
+
 
 
 # --- 3. Streamlit UI ---
@@ -88,28 +88,28 @@ def build_model(input_shape, optimizer, activation, dense_layers, neurons, dropo
 st.markdown(
     """
     <style>
-        /* Add custom styles here */
+        /* Updated color scheme */
         .title {
-            color: #4CAF50; /* Green */
+            color: #26ae60; /* Emerald green */
             text-align: center;
             margin-bottom: 2rem;
         }
         .sidebar-header {
-            color: #007BFF; /* Blue */
+            color: #3498db; /* Blue */
             font-size: 1.5em;
             margin-bottom: 1rem;
         }
         .metric-label {
             font-size: 1.2em;
-            color: #2c3e50; /* Dark gray */
+            color: #34495e; /* Dark gray */
         }
         .metric-value {
             font-size: 1.5em;
             font-weight: bold;
-            color: #e74c3c; /* Red */
+            color: #e67e22; /* Orange */
         }
         .stButton > button {
-            background-color: #4CAF50; /* Green */
+            background-color: #26ae60; /* Emerald green */
             color: white;
             padding: 10px 20px;
             font-size: 16px;
@@ -118,27 +118,38 @@ st.markdown(
             cursor: pointer;
             transition: background-color 0.3s ease;
             width: 100%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Add shadow */
         }
         .stButton > button:hover {
-            background-color: #45a049; /* Darker green */
+            background-color: #217f4d; /* Darker emerald */
+            box-shadow: 0 3px 7px rgba(0,0,0,0.3); /* Increase shadow on hover*/
         }
         .stSlider > div > div > div > div {
-            background-color: #4CAF50; /* Green */
+            background-color: #26ae60; /* Emerald green */
         }
         .stSelectbox > div > div {
-            border-color: #4CAF50; /* Green */
+            border-color: #26ae60; /* Emerald green */
         }
         .stSelectbox > div > div:focus-within {
-            border-color: #388E3C; /* Darker green on focus */
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3); /* Green focus shadow */
+            border-color: #217f4d; /* Darker emerald green on focus */
+            box-shadow: 0 0 0 3px rgba(38, 174, 96, 0.3); /* Green focus shadow */
         }
         .dataframe {
-            border: 1px solid #ddd;
+            border: 1px solid #e0e0e0;
             border-radius: 5px;
             padding: 10px;
             background-color: white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .stPlotlyChart {
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
     </style>
     """,
@@ -146,29 +157,26 @@ st.markdown(
 )
 
 # 🖼️ App Title and Logo
-# Load the image
-# Replace "logo.png" with the actual path to your logo file.  If the logo is in the same directory, you can use "logo.png"
-# If you don't have a logo, you can comment out this whole block.
-# try:
-#     logo = Image.open("logo.png")
-#     st.image(logo, caption="ANN Model Dashboard", width=200)
-# except FileNotFoundError:
-#     st.title("📊 ANN Model Dashboard - Conversion Prediction")
 st.title("📊 ANN Model Dashboard - Conversion Prediction")
 
 
 # Sidebar for Hyperparameter Tuning
-st.sidebar.header("🔧 Model Hyperparameters",  )
-epochs = st.sidebar.slider("Epochs", 5, 12, 10, 1)
+st.sidebar.header("🔧 Model Hyperparameters")
+epochs = st.sidebar.slider("Epochs", 5, 100, 10, 5) # Increased max epochs
 learning_rate = st.sidebar.selectbox("Learning Rate", [0.01, 0.001, 0.0001], index=1)
-activation_function = st.sidebar.selectbox("Activation Function", ["relu", "sigmoid", "tanh"])
-optimizer_choice = st.sidebar.selectbox("Optimizer", ["adam", "sgd", "rmsprop"])
-dense_layers = st.sidebar.selectbox("Dense Layers", [2, 3, 4, 5])
-neurons_per_layer = st.sidebar.selectbox("Neurons per Layer", [32, 64, 128, 256])
-dropout_rate = st.sidebar.slider("Dropout Rate", 0.1, 0.5, 0.1, 0.01)
+activation_function = st.sidebar.selectbox("Activation Function", ["relu", "sigmoid", "tanh", "elu"], index=0) # Added elu
+optimizer_choice = st.sidebar.selectbox("Optimizer", ["adam", "sgd", "rmsprop", "adamax"], index=0) # Added adamax
+dense_layers = st.sidebar.selectbox("Dense Layers", [2, 3, 4, 5], index=1)
+neurons_per_layer = st.sidebar.selectbox("Neurons per Layer", [32, 64, 128, 256], index=2)
+dropout_rate = st.sidebar.slider("Dropout Rate", 0.1, 0.5, 0.2, 0.05)
 
 # Select Optimizer
-optimizers = {"adam": Adam(learning_rate), "sgd": SGD(learning_rate), "rmsprop": RMSprop(learning_rate)}
+optimizers = {
+    "adam": Adam(learning_rate=learning_rate),
+    "sgd": SGD(learning_rate=learning_rate),
+    "rmsprop": RMSprop(learning_rate=learning_rate),
+    "adamax": tf.keras.optimizers.Adamax(learning_rate=learning_rate) # Added adamax
+}
 optimizer = optimizers[optimizer_choice]
 
 # --- 4. Model Training and Evaluation ---
@@ -197,8 +205,8 @@ if st.button("🚀 Train Model"):
     fig, ax = plt.subplots(1, 2, figsize=(14, 5))
 
     # Accuracy Plot
-    ax[0].plot(history.history['accuracy'], label="Train Accuracy", color="#28a745")  # Green
-    ax[0].plot(history.history['val_accuracy'], label="Validation Accuracy", color="#dc3545")  # Red
+    ax[0].plot(history.history['accuracy'], label="Train Accuracy", color="#2ecc71")  # Emerald
+    ax[0].plot(history.history['val_accuracy'], label="Validation Accuracy", color="#e74c3c")  # Red
     ax[0].set_title("Accuracy over Epochs")
     ax[0].set_xlabel("Epochs")
     ax[0].set_ylabel("Accuracy")
@@ -206,8 +214,8 @@ if st.button("🚀 Train Model"):
     ax[0].grid(True)
 
     # Loss Plot
-    ax[1].plot(history.history['loss'], label="Train Loss", color="#28a745")  # Green
-    ax[1].plot(history.history['val_loss'], label="Validation Loss", color="#dc3545")  # Red
+    ax[1].plot(history.history['loss'], label="Train Loss", color="#2ecc71")  # Emerald
+    ax[1].plot(history.history['val_loss'], label="Validation Loss", color="#e74c3c")  # Red
     ax[1].set_title("Loss over Epochs")
     ax[1].set_xlabel("Epochs")
     ax[1].set_ylabel("Loss")
@@ -222,7 +230,7 @@ if st.button("🚀 Train Model"):
     cm = confusion_matrix(y_test, y_pred)
 
     fig, ax = plt.subplots(figsize=(6, 4))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Not Converted", "Converted"], yticklabels=["Not Converted", "Converted"])
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Greens", xticklabels=["Not Converted", "Converted"], yticklabels=["Not Converted", "Converted"]) # Changed cmap
     ax.set_xlabel("Predicted")
     ax.set_ylabel("Actual")
     st.pyplot(fig)
@@ -240,7 +248,7 @@ if st.button("🚀 Train Model"):
     roc_auc = auc(fpr, tpr)
 
     fig, ax = plt.subplots(figsize=(6, 4))
-    plt.plot(fpr, tpr, color="#007BFF", lw=2, label=f"AUC = {roc_auc:.2f}")
+    plt.plot(fpr, tpr, color="#3498db", lw=2, label=f"AUC = {roc_auc:.2f}") # Changed color
     plt.plot([0, 1], [0, 1], color="gray", linestyle="--")
     plt.xlabel("False Positive Rate")
     plt.ylabel("True Positive Rate")
@@ -265,7 +273,7 @@ st.markdown(
     """
     <div style="text-align: center; margin-top: 2rem;">
         <a href="https://github.com/Rushil-K" target="_blank" rel="noopener noreferrer">
-            <button style="background-color: #24292e; color: white; padding: 12px 24px; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease;">
+            <button style="background-color: #3498db; color: white; padding: 12px 24px; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease;">
                 ⭐ Follow Me on GitHub
             </button>
         </a>
