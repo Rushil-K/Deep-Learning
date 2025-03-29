@@ -90,7 +90,8 @@ Follow Rushil Kohli on GitHub: [Follow !](https://github.com/Rushil-K)
 
 
 ## Future Improvements  
-- Support for handwritten text beyond digits  
+- Support for handwritten text beyond digits
+- Currently the app supports only black and white image recognition, the support for color images will come soon
 - Enhancement in noise reduction and preprocessing  
 - Deployment on cloud platforms  
 
