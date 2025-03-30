@@ -41,7 +41,7 @@ pip install selenium beautifulsoup4 pandas numpy tensorflow keras scikit-learn
 
 ## **License**
 
-This project is licensed under the [Apache 2.0 License]().
+This project is licensed under the [Apache 2.0 License](https://github.com/Rushil-K/Deep-Learning/blob/main/LICENSE).
 
 ## **Contributors**
 
