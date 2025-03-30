@@ -9,7 +9,7 @@ This app allows users to **upload multiple scanned handwritten digit images** an
 [Try the App Here](https://deep-learning-daqsskxacd8e5j7hketto2.streamlit.app/)  
 
 ---
-Project Report is as follows: [View the Report here](https://github.com/Rushil-K/Deep-Learning/blob/main/CNN/nmrk2627_CNN_DLM_projREPORT.ipynb)
+Project Report is as follows: [View the Report here](https://colab.research.google.com/drive/15_Zu41-3ZA-ZpesIfohFw5NAbH69GErx?usp=sharing)
 
 ---
 
