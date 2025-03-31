@@ -11,33 +11,6 @@ The data describes the **NIFTY 50 index**, a key benchmark for the Indian stock 
 
 For more information about the NIFTY 50, you can visit the official NSE website: [web](https://www.nseindia.com/market-data/live-equity-market)
 
-#### NIFTY 50 Data Column Details
-
-| Column | Description | Data Type | Example |
-| ----- | ----- | ----- | ----- |
-| **Local Date** | The date of the data point. This column provides the calendar date for each record, allowing for time-based analysis and filtering. | `Object` | "28-Mar-2025" |
-| **Local Time** | The time of the data point. This column indicates the precise time of day when the NIFTY 50 index value was recorded. | `Object` | "15:20" |
-| **Close** | The closing value of the NIFTY 50 index. This represents the index value at the end of a specific trading interval. | `Object` | "23,497.10" |
-| **Net** | The net change in the index value from the previous data point. | `Float64` | -46.55 |
-| **%Chg** | The percentage change in the index value from the previous data point. | `Object` | "-0.20%" |
-| **Open** | The opening value of the NIFTY 50 index.  | `Object` | "23,543.65" |
-| **Low** | The lowest value of the NIFTY 50 index during that period. | `Object` | "23,497.10" |
-| **High** | The highest value of the NIFTY 50 index during that period. | `Object` | "23,545.30" |
-| **Volume** | The volume of shares traded. This represents the total number of shares traded across all 50 companies within the NIFTY 50 index during the specified time interval. | `Object` | "1,12,60,337" |
-
-#### NIFTY 50 Key Data Characteristics
-* **Dataset Size**: Contains 9,142 rows, indicating a substantial amount of data for analysis.
-
-* **Missing Values**: Some columns have null values, including `Net`, `%Chg`, and `Volume`. The presence of missing data requires careful handling, such as imputation or removal.
-
-* **Time Series Nature**: The `LocalDate` and `LocalTime` columns indicate that this is time-series data.
-
-* **Price Range**: The `Close`, `Open`, `Low`, and `High` values show the fluctuation of the index's price.
-
-* **Market Dynamics**: The `Net` and `%Chg` columns are essential for understanding the direction and magnitude of market movements.
-
-* **Trading Activity**: The `Volume` column reflects the level of trading activity.
-
 ### ICICI Bank Data
 * The project also includes data for ICICI Bank.  Detailed information about ICICI Bank can be found on the official website: [web](https://www.icicibank.com/)
 * The ICICI Bank data has same columns as NIFTY 50 data.
