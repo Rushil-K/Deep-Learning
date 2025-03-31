@@ -1,6 +1,6 @@
 # **RNN-Based Sentiment Analysis and Movie Review Scraper**
-### REPORT can be viewed here : [REPORT](https://colab.research.google.com/drive/1SwmSA3cbYHQ3k986Z_0mMZtd2cGmWupF?usp=sharing)
----
+
+#### REPORT can be viewed here : [REPORT](https://colab.research.google.com/drive/1SwmSA3cbYHQ3k986Z_0mMZtd2cGmWupF?usp=sharing)
 
 ## **Overview**
 
