@@ -9,7 +9,7 @@ This project provides a comprehensive analysis of stock price dynamics, with a f
 ### NIFTY 50 Data
 The data describes the **NIFTY 50 index**, a key benchmark for the Indian stock market. It represents the weighted average of the 50 largest Indian companies listed on the National Stock Exchange (NSE), providing a snapshot of the market's performance. The NIFTY 50 is widely used by investors, analysts, and portfolio managers to track the overall direction of the Indian equity market. It serves as the basis for various investment instruments, such as index funds and derivatives. Each row in the dataset represents a specific point in time.
 
-For more information about the NIFTY 50, you can visit the official NSE website: [https://www.nseindia.com/market-data/live-equity-market](https://www.nseindia.com/market-data/live-equity-market)
+For more information about the NIFTY 50, you can visit the official NSE website: [web](https://www.nseindia.com/market-data/live-equity-market)
 
 #### NIFTY 50 Data Column Details
 
@@ -39,7 +39,7 @@ For more information about the NIFTY 50, you can visit the official NSE website:
 * **Trading Activity**: The `Volume` column reflects the level of trading activity.
 
 ### ICICI Bank Data
-* The project also includes data for ICICI Bank.  Detailed information about ICICI Bank can be found on the official website: [https://www.icicibank.com/](https://www.icicibank.com/)
+* The project also includes data for ICICI Bank.  Detailed information about ICICI Bank can be found on the official website: [web](https://www.icicibank.com/)
 * The ICICI Bank data has same columns as NIFTY 50 data.
 
 ## Methodology
@@ -88,5 +88,5 @@ The project can be extended in several ways:
 
 ## License
 
-This project is licensed under the [Apache License 2.0](.
+This project is licensed under the [Apache License 2.0](https://github.com/Rushil-K/Deep-Learning/blob/main/LICENSE).
 
