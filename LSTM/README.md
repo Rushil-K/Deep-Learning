@@ -1,5 +1,7 @@
 # Stock Price Analysis and Prediction
 
+[REPORT](https://colab.research.google.com/drive/147txJ6qZSg4vlEZtzna-0t5dO7D9lrB0?usp=sharing) 
+
 ## Project Description
 
 This project provides a comprehensive analysis of stock price dynamics, with a focus on the NIFTY 50 Index and ICICI Bank. The project aims to develop and evaluate machine learning models for predicting stock prices, and to provide insights into market behavior.  The analysis considers the complexities of stock market data, including volatility, cyclical patterns, and the influence of various economic and market factors.  The ultimate goal is to equip investors with tools and knowledge to make more informed decisions.
