@@ -4,30 +4,6 @@
 
 Welcome to the **Deep Learning Projects Repository**. This repository contains four major deep learning projects, each implemented using different neural network architectures. Every project is organized in its respective directory with a dedicated README file for in-depth details. Below is a summary of each project for easy navigation.
 
-## **Repository Structure**
-
-📂 Deep Learning Projects Repository
-
-│-- 📂 ANN
-
-│   ├── README.md
-
-│-- 📂 CNN
-
-│   ├── README.md
-
-│-- 📂 LSTM
-
-│   ├── README.md
-
-│-- 📂 RNN
-
-│   ├── README.md
-
-│-- LICENSE
-
-│-- README.md (this file)
-
 ## **Project Details**
 
 ### **1\. Artificial Neural Networks (ANN)**
@@ -40,7 +16,7 @@ Welcome to the **Deep Learning Projects Repository**. This repository contains f
 ### **2\. Convolutional Neural Networks (CNN)**
 
 * **Contributors**: Rushil Kohli, Navneet Mittal  
-* **Description**: This project implements CNNs using Google Colab for training and evaluation. It focuses on image classification and object detection tasks, making use of deep learning frameworks such as TensorFlow and PyTorch.  
+* **Description**: This project implements CNNs using Google Colab for training and evaluation. It focuses on image classification and object detection tasks, making use of deep learning frameworks such as TensorFlow.  
 * **Folder**: `CNN/`  
 * **More Info**: Read CNN README
 
@@ -69,3 +45,7 @@ To explore the projects, navigate to their respective directories and follow the
 ---
 
 For any questions or contributions, feel free to open an issue or submit a pull request.
+Follow us :
+- [Rushil Kohli](https://github.com/Rushil-K)
+- [Khushi Kalra](https://github.com/KhushiKalra21)
+- [Navneet Mittal](https://github.com/Navneet-Mittal911)
