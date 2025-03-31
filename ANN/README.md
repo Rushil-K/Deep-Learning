@@ -1,6 +1,7 @@
 #  Deep Learning - ANN Dashboard  
 
 ###  Live Demo: [Visit Here](https://deep-learning-y9mzjiqycyib63ewyfwkgg.streamlit.app/)  
+### REPORT can be viewed here: [REPORT](https://colab.research.google.com/github/Rushil-K/Deep-Learning/blob/main/ANN/nmrk2627_REPORT_ANN.ipynb)
 ### Dataset can be accessed here : [Zip File](https://drive.google.com/file/d/18_IlD33FyWSy1kSSEaCBfmAeyQCXqaV1/view?usp=sharing)
 
 ##  Overview  
