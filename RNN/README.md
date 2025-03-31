@@ -1,5 +1,7 @@
 # **RNN-Based Sentiment Analysis and Movie Review Scraper**
 ### REPORT can be viewed here : [REPORT](https://colab.research.google.com/drive/1SwmSA3cbYHQ3k986Z_0mMZtd2cGmWupF?usp=sharing)
+---
+
 ## **Overview**
 
 This project is a state-of-the-art sentiment analysis solution built using a Recurrent Neural Network (RNN). It incorporates a custom-built web scraper that dynamically extracts movie reviews from Metacritic. The collected data undergoes a robust preprocessing pipeline before being used to train an RNN model that classifies reviews as either positive or negative. This solution is designed for scalability and can be extended to other domains requiring sentiment-based classification.
