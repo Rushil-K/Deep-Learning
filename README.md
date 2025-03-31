@@ -36,7 +36,7 @@ Welcome to the **Deep Learning Projects Repository**. This repository contains f
 
 ## **License**
 
-This repository is licensed under the **Apache License 2.0**. See the [LICENSE]( file for details.
+This repository is licensed under the **Apache License 2.0**. See the [LICENSE](https://github.com/Rushil-K/Deep-Learning/blob/main/LICENSE) file for details.
 
 ## **Getting Started**
 
